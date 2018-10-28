@@ -3,6 +3,7 @@ from classes import *
 from mimesis import Person
 from mimesis import Address
 from mimesis import Business
+from random import randint
 import time
 import random
 import datetime
@@ -21,6 +22,7 @@ cenniki_uslug = {}
 karty_hotelowe = {}
 pobyty = {}
 zamowienia_uslugi = {}
+ankiety = {}
 
 def generujHotele(ilosc):
     for x in range(0, ilosc):
@@ -160,7 +162,6 @@ def get_cennik_for_zamowienie(date, opcja_pobytu):
         list(cenniki_uslug.values())
     ))
 
-
     return random.choice(_cenniki).ID
 
 
@@ -183,6 +184,31 @@ def generujZamowieniaUslug(ilosc, karta_hotelowa_id, max_date):
             Oplacone=random.randint(0, 1)
         )
 
+def generujAnkiete(karta_hotelowa_id, data):
+    plec = ['M', 'F']
+    ankieta = {
+        'data': data.strftime('%d-%m-%Y'),
+        'plec': random.choice(plec),
+        'wiek': randint(18,100),
+        'sugestie': 'lorem ipsum',
+        'oceny': {
+            'zadowolenieZPobytu': randint(0, 10),
+            'czystoscPokoju': randint(0,10),
+            'wyposazeniePokoju': randint(0, 10),
+            'czystoscLazienki': randint(0, 10),
+            'jakosc': {
+                'sprzatanie': randint(0, 10),
+                'restauracja': randint(0, 10),
+                'wydarzenia': randint(0, 10),
+                'rekreacja': randint(0, 10),
+                'sport': randint(0, 10),
+                'spa': randint(0, 10),
+            }
+        }
+    }
+    ankiety[karta_hotelowa_id] = ankieta
+
+
 
 def single(title, body):
     print("{title}...".format(title=title), end=' ', flush=True)
@@ -192,7 +218,7 @@ def single(title, body):
     print("Zakończone; czas: {czas}s; ilość: {ilosc}".format(czas=elapsed_time, ilosc=count))
 
 
-def generuj(N=100000, t2=datetime.date.today(), t1=None):
+def generuj(N=1000, t2=datetime.date.today(), t1=None):
     if t1 is None:
         t1 = t2 - datetime.timedelta(days=365 * 3)
     if t2 is None:
@@ -264,6 +290,11 @@ def generuj(N=100000, t2=datetime.date.today(), t1=None):
             )
         return sum
 
+    def stage9():
+        for karta in karty_hotelowe.values():
+            generujAnkiete(karta.ID, karta.DataZwrotu)
+        return N
+
     mapping = {
         "Generowanie Gości Hotelowych": stage1,
         "Generowanie Opcji Pobytu": stage2,
@@ -273,6 +304,7 @@ def generuj(N=100000, t2=datetime.date.today(), t1=None):
         "Generowanie Kart Hotelowych": stage6,
         "Generowanie Zamówień Usług": stage8,
         "Generowanie Pobytów": stage7,
+        "Generowanie Ankiet": stage9,
     }
 
     for title, body in mapping.items():
@@ -291,3 +323,5 @@ def generuj(N=100000, t2=datetime.date.today(), t1=None):
         "ZamowienieUslugi": zamowienia_uslugi,
         "Pobyt": pobyty
     }
+
+generuj()
