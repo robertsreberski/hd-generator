@@ -27,3 +27,18 @@ def execute_bulk(table_name, bulk_file):
     db.commit()
     cursor.close()
     db.close()
+
+
+def recreate_all():
+    with connect_db() as db:
+        with db.cursor() as cursor:
+            with open("./Creates.sql", "r") as file:
+                data = file.read().replace('\n', '')
+                for statement in data.split(';'):
+                    if len(statement) == 0:
+                        continue
+
+                    cursor.execute(statement)
+                    db.commit()
+
+

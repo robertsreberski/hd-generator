@@ -218,13 +218,9 @@ def single(title, body):
     print("Zakończone; czas: {czas}s; ilość: {ilosc}".format(czas=elapsed_time, ilosc=count))
 
 
-def generuj(N=1000, t2=datetime.date.today(), t1=None):
-    if t1 is None:
-        t1 = t2 - datetime.timedelta(days=365 * 3)
-    if t2 is None:
-        t2 = t1 + datetime.timedelta(days=365 * 3)
 
-    print("Rozpoczynanie generowania; daty: t1={t1}, t2={t2}".format(t1=t1, t2=t2))
+def generuj(N, t1, t2):
+    print("Rozpoczynanie generowania; daty: poczatek={t1}, koniec={t2}".format(t1=t1, t2=t2))
 
     def stage1():
         ilosc = N*3
