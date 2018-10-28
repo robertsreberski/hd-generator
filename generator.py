@@ -296,7 +296,6 @@ def generuj(N, t1, t2, opcje_uslug):
                 prev_data = json.load(json_file)
 
         if len(prev_data) > 0:
-            print(prev_data)
             ankiety.update(prev_data)
 
         with open("ankiety.json", "w") as write_file:
