@@ -189,7 +189,7 @@ def generujZamowieniaUslug(ilosc, karta_hotelowa_id, max_date):
 def generujAnkiete(karta_hotelowa_id, data):
     plec = ['M', 'F']
     ankieta = {
-        'data': data.strftime('%d-%m-%Y'),
+        'data': data.strftime('%Y-%m-%d'),
         'plec': random.choice(plec),
         'wiek': randint(18,100),
         'sugestie': 'lorem ipsum',
@@ -290,7 +290,8 @@ def generuj(N, t1, t2):
 
     def stage9():
         for karta in karty_hotelowe.values():
-            generujAnkiete(karta.ID, karta.DataZwrotu)
+            if randint(0, 100) <= 66:
+                generujAnkiete(karta.ID, karta.DataZwrotu)
 
         with open("ankiety.json", "w") as write_file:
             json.dump(ankiety, write_file)
@@ -324,4 +325,3 @@ def generuj(N, t1, t2):
         "ZamowienieUslugi": zamowienia_uslugi,
         "Pobyt": pobyty
     }
-
