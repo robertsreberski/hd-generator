@@ -4,10 +4,12 @@ from mimesis import Person
 from mimesis import Address
 from mimesis import Business
 from random import randint
+from collections import OrderedDict
 import time
 import random
 import datetime
 import uuid
+import json
 
 person = Person()
 address = Address()
@@ -206,7 +208,7 @@ def generujAnkiete(karta_hotelowa_id, data):
             }
         }
     }
-    ankiety[karta_hotelowa_id] = ankieta
+    ankiety[str(karta_hotelowa_id)] = ankieta
 
 
 
@@ -289,20 +291,23 @@ def generuj(N, t1, t2):
     def stage9():
         for karta in karty_hotelowe.values():
             generujAnkiete(karta.ID, karta.DataZwrotu)
+
+        with open("ankiety.json", "w") as write_file:
+            json.dump(ankiety, write_file)
         return N
 
-    mapping = {
-        "Generowanie Gości Hotelowych": stage1,
-        "Generowanie Opcji Pobytu": stage2,
-        "Generowanie Hoteli": stage3,
-        "Generowanie Usług": stage4,
-        "Generowanie Cenników Usług": stage5,
-        "Generowanie Kart Hotelowych": stage6,
-        "Generowanie Zamówień Usług": stage8,
-        "Generowanie Pobytów": stage7,
-        "Generowanie Ankiet": stage9,
-    }
-
+    mapping_tuples = [
+        ("Generowanie Gości Hotelowych", stage1),
+        ("Generowanie Opcji Pobytu", stage2),
+        ("Generowanie Hoteli", stage3),
+        ("Generowanie Usług", stage4),
+        ("Generowanie Cenników Usług", stage5),
+        ("Generowanie Kart Hotelowych", stage6),
+        ("Generowanie Zamówień Usług", stage8),
+        ("Generowanie Pobytów", stage7),
+        ("Generowanie Ankiet", stage9),
+    ]
+    mapping = OrderedDict(mapping_tuples)
     for title, body in mapping.items():
         single(
             title=title,
@@ -320,4 +325,3 @@ def generuj(N, t1, t2):
         "Pobyt": pobyty
     }
 
-generuj()
