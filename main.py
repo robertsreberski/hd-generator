@@ -16,7 +16,8 @@ margin = {
     "Pobyt": 0
 }
 
-def proceed(N, t1, t2):
+
+def proceed(N, t1, t2, opcje_uslug):
     if t1 is None:
         t1 = t2 - datetime.timedelta(days=365 * 3)
     if t2 is None:
@@ -24,7 +25,7 @@ def proceed(N, t1, t2):
 
     print("### Starting to generate ###\r\n")
     start_time = time.time()
-    lists = generator.generuj(N=int(N), t1=t1, t2=t2)
+    lists = generator.generuj(N=int(N), t1=t1, t2=t2, opcje_uslug=opcje_uslug)
     elapsed_time = time.time() - start_time
     print("### Generating has been finished ###")
     print("Total time to complete: {time}s\r\n".format(time=elapsed_time))
@@ -75,10 +76,11 @@ if N.strip() == '':
     count = 50
 else:
     count = int(N)/2
-
-proceed(N=count, t1=None, t2=start_date)
+opcje = ['sprzatanie', 'restauracja', 'wydarzenia', 'rekreacja', 'sport', 'spa']
+proceed(N=count, t1=None, t2=start_date, opcje_uslug=opcje)
 input("\nT1 generated, press ENTER to continue to T2\n")
-proceed(N=count, t1=start_date, t2=end_date)
+opcje.append('safari')
+proceed(N=count, t1=start_date, t2=end_date, opcje_uslug=opcje)
 
 
 
