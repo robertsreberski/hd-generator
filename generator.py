@@ -5,6 +5,7 @@ from mimesis import Address
 from mimesis import Business
 from random import randint
 from collections import OrderedDict
+import os.path
 import time
 import random
 import datetime
@@ -293,6 +294,15 @@ def generuj(N, t1, t2):
             if randint(0, 100) <= 66:
                 generujAnkiete(karta.ID, karta.DataZwrotu)
 
+        prev_data = {}
+        if os.path.exists("ankiety.json"):
+            with open("ankiety.json") as json_file:
+                prev_data = json.load(json_file)
+
+        if len(prev_data) > 0:
+            print(prev_data)
+            ankiety.update(prev_data)
+
         with open("ankiety.json", "w") as write_file:
             json.dump(ankiety, write_file)
         return N
@@ -325,3 +335,4 @@ def generuj(N, t1, t2):
         "ZamowienieUslugi": zamowienia_uslugi,
         "Pobyt": pobyty
     }
+
