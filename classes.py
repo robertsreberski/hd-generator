@@ -8,8 +8,8 @@ class GoscHotelowy:
         self._Pobyty = _Pobyty
 
     def bulk(self):
-        return '{PESEL}|"{Imie}"|"{Nazwisko}"|"{KrajPochodzenia}"|"{DataUrodzenia}"'.format(
-            PESEL=self.PESEL,
+        return '{PESEL}|{Imie}|{Nazwisko}|{KrajPochodzenia}|{DataUrodzenia}'.format(
+            PESEL=str(self.PESEL).upper(),
             Imie=self.Imie,
             Nazwisko=self.Nazwisko,
             KrajPochodzenia=self.KrajPochodzenia,
@@ -36,7 +36,7 @@ class OpcjaPobytu:
         self.Typ = Typ
 
     def bulk(self):
-        return "{Typ}".format(
+        return '{Typ}'.format(
             Typ=self.Typ
         )
 
@@ -86,7 +86,7 @@ class KartaHotelowa:
         self.OpcjaPobytu = OpcjaPobytuID
 
     def bulk(self):
-        return "{ID}|{Hotel}|{DataWydania}|{DataZwrotu}|{OpcjaPobytu}".format(
+        return "{ID}|{DataWydania}|{DataZwrotu}|{OpcjaPobytu}|{Hotel}".format(
             ID=self.ID,
             Hotel=self.HotelID,
             DataWydania=self.DataWydania,
@@ -118,7 +118,8 @@ class ZamowienieUslugi:
         self.Oplacone = Oplacone
 
     def bulk(self):
-        return "{KartaHotelowa}|{CennikUslugi}|{DataRozpoczecia}|{DataZakonczenia}|{Oplacone}".format(
+        return "{ID}|{KartaHotelowa}|{CennikUslugi}|{DataRozpoczecia}|{DataZakonczenia}|{Oplacone}".format(
+            ID=self._ID,
             KartaHotelowa=self.KartaHotelowa,
             CennikUslugi=self.CennikUslugi,
             DataRozpoczecia=self.DataRozpoczecia,

@@ -1,7 +1,7 @@
 import pypyodbc as pyodbc
 
 db_host = 'localhost'
-db_name = 'Test1'
+db_name = 'Test2'
 db_user = 'sa'
 db_password = 'admin'
 
@@ -20,7 +20,7 @@ def connect_db():
 def execute_bulk(table_name, bulk_file):
     db = connect_db()
     cursor = db.cursor()
-    sql = "BULK INSERT dbo.{table_name} FROM '{bulk_location}' WITH (FIELDTERMINATOR='|');" \
+    sql = "BULK INSERT dbo.{table_name} FROM '{bulk_location}' WITH (FIELDTERMINATOR='|', ROWTERMINATOR='\r\n');" \
         .format(table_name=table_name, bulk_location=bulk_file)
 
     cursor.execute(sql)
