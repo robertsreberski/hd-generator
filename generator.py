@@ -186,8 +186,13 @@ def generujZamowieniaUslug(ilosc, karta_hotelowa_id, max_date):
             Oplacone=random.randint(0, 1)
         )
 
-def generujAnkiete(karta_hotelowa_id, data):
+
+def generujAnkiete(karta_hotelowa_id, data, opcje_uslug):
+    if randint(0, 100) <= 66:
+        return
     plec = ['M', 'F']
+    jakosc_uslug = list(map(lambda x: randint(0, 10), opcje_uslug))
+
     ankieta = {
         'data': data.strftime('%Y-%m-%d'),
         'plec': random.choice(plec),
@@ -198,14 +203,7 @@ def generujAnkiete(karta_hotelowa_id, data):
             'czystoscPokoju': randint(0,10),
             'wyposazeniePokoju': randint(0, 10),
             'czystoscLazienki': randint(0, 10),
-            'jakosc': {
-                'sprzatanie': randint(0, 10),
-                'restauracja': randint(0, 10),
-                'wydarzenia': randint(0, 10),
-                'rekreacja': randint(0, 10),
-                'sport': randint(0, 10),
-                'spa': randint(0, 10),
-            }
+            'jakosc': dict(zip(opcje_uslug, jakosc_uslug))
         }
     }
     ankiety[str(karta_hotelowa_id)] = ankieta
@@ -221,7 +219,7 @@ def single(title, body):
 
 
 
-def generuj(N, t1, t2):
+def generuj(N, t1, t2, opcje_uslug):
     print("Rozpoczynanie generowania; daty: poczatek={t1}, koniec={t2}".format(t1=t1, t2=t2))
 
     def stage1():
@@ -241,14 +239,13 @@ def generuj(N, t1, t2):
 
     def stage4():
         sum = 0
-        opcje = ['SPRZATANIE', 'RESTAURACJA', 'WYDARZENIA', 'REKREACJA', 'SPORT', 'SPA']
         for id in hotele:
             ilosc = random.randint(5, 25)
             sum += ilosc
             generujUslugi(
                 ilosc=ilosc,
                 hotel_id=id,
-                typy_uslug=opcje
+                typy_uslug=opcje_uslug
             )
         return sum
 
@@ -279,7 +276,7 @@ def generuj(N, t1, t2):
     def stage8():
         sum = 0
         for id in karty_hotelowe:
-            ilosc = random.randint(1, 20)
+            ilosc = random.randint(1, 10)
             sum += ilosc
             generujZamowieniaUslug(
                 ilosc=ilosc,
@@ -290,11 +287,10 @@ def generuj(N, t1, t2):
 
     def stage9():
         for karta in karty_hotelowe.values():
-            if randint(0, 100) <= 66:
-                generujAnkiete(karta.ID, karta.DataZwrotu)
+            generujAnkiete(karta.ID, karta.DataZwrotu, opcje_uslug)
 
         with open("ankiety.json", "w") as write_file:
-            json.dump(ankiety, write_file)
+            json.dump(ankiety, write_file, indent=4, sort_keys=True)
         return N
 
     mapping_tuples = [
