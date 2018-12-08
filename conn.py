@@ -1,7 +1,9 @@
 import pypyodbc as pyodbc
+import os
+import shutil
 
 db_host = 'localhost'
-db_name = 'Test2'
+db_name = 'System_Hotelarski'
 db_user = 'sa'
 db_password = 'admin'
 
@@ -30,9 +32,17 @@ def execute_bulk(table_name, bulk_file):
 
 
 def recreate_all():
+    if os.path.exists('ankiety.json'):
+        os.remove('ankiety.json')
+
+    if os.path.exists('bulks'):
+        shutil.rmtree('bulks')
+
+    os.makedirs(r'bulks')
+
     with connect_db() as db:
         with db.cursor() as cursor:
-            with open("./Creates.sql", "r") as file:
+            with open("Creates.sql", "r") as file:
                 data = file.read().replace('\n', '')
                 for statement in data.split(';'):
                     if len(statement) == 0:

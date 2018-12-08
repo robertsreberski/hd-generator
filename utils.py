@@ -2,8 +2,13 @@ import radar
 import datetime
 import random
 
+
 def get_random_date(min, max):
     return radar.random_date(start=min, stop=max)
+
+
+def get_random_time(min=None):
+    return radar.random_time(start=min)
 
 
 def get_random_date_from_year(year):

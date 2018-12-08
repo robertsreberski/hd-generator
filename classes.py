@@ -18,15 +18,21 @@ class GoscHotelowy:
 
 
 class Hotel:
-    def __init__(self, ID, Adres, Nazwa):
+    def __init__(self, ID, Adres, Miejscowosc, JednostkaAdministracyjna, Panstwo, Nazwa):
         self.ID = ID
         self.Adres = Adres
+        self.Miejscowosc = Miejscowosc
+        self.JednostkaAdministracyjna = JednostkaAdministracyjna
+        self.Panstwo = Panstwo
         self.Nazwa = Nazwa
 
     def bulk(self):
-        return "{ID}|{Adres}|{Nazwa}".format(
+        return "{ID}|{Adres}|{Miejscowosc}|{JednostkaAdministracyjna}|{Panstwo}|{Nazwa}".format(
             ID=self.ID,
             Adres=self.Adres,
+            Miejscowosc=self.Miejscowosc,
+            JednostkaAdministracyjna=self.JednostkaAdministracyjna,
+            Panstwo=self.Panstwo,
             Nazwa=self.Nazwa
         )
 
@@ -109,20 +115,27 @@ class Pobyt:
 
 
 class ZamowienieUslugi:
-    def __init__(self, _ID, KartaHotelowaID, CennikUslugiID, DataRozpoczecia, DataZakonczenia, Oplacone):
+    def __init__(self, _ID, KartaHotelowaID, CennikUslugiID, DataRozpoczecia, CzasRozpoczecia, DataZakonczenia,
+                 CzasZakonczenia, IloscUslug, Oplacone):
         self._ID = _ID
         self.KartaHotelowa = KartaHotelowaID
         self.CennikUslugi = CennikUslugiID
         self.DataRozpoczecia = DataRozpoczecia
+        self.CzasRozpoczecia = CzasRozpoczecia
         self.DataZakonczenia = DataZakonczenia
+        self.CzasZakonczenia = CzasZakonczenia
+        self.IloscUslug = IloscUslug
         self.Oplacone = Oplacone
 
     def bulk(self):
-        return "{ID}|{KartaHotelowa}|{CennikUslugi}|{DataRozpoczecia}|{DataZakonczenia}|{Oplacone}".format(
+        return "{ID}|{KartaHotelowa}|{CennikUslugi}|{DataRozpoczecia} {CzasRozpoczecia}|{DataZakonczenia} {CzasZakonczenia}|{IloscUslug}|{Oplacone}".format(
             ID=self._ID,
             KartaHotelowa=self.KartaHotelowa,
             CennikUslugi=self.CennikUslugi,
             DataRozpoczecia=self.DataRozpoczecia,
+            CzasRozpoczecia=self.CzasRozpoczecia,
             DataZakonczenia=self.DataZakonczenia,
+            CzasZakonczenia=self.CzasZakonczenia,
+            IloscUslug=self.IloscUslug,
             Oplacone=self.Oplacone
         )

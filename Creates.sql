@@ -20,7 +20,10 @@ CREATE TABLE GoscHotelowy (
 CREATE TABLE Hotel (
 	ID UNIQUEIDENTIFIER PRIMARY KEY,
 	Adres varchar(50) NOT NULL,
-	Nazwa varchar(40) NOT NULL,
+	Miejscowosc varchar(50) NOT NULL,
+	JednostkaAdministracyjna varchar(50) NOT NULL,
+	Panstwo varchar(50) NOT NULL,
+	Nazwa varchar(100) NOT NULL,
 );
 
 CREATE TABLE OpcjaPobytu (
@@ -61,7 +64,8 @@ CREATE TABLE ZamowienieUslugi (
 	ID UNIQUEIDENTIFIER PRIMARY KEY,
 	KartaHotelowa UNIQUEIDENTIFIER FOREIGN KEY REFERENCES KartaHotelowa(ID),
 	CennikUslugi UNIQUEIDENTIFIER FOREIGN KEY REFERENCES CennikUslugi(ID),
-	DataRozpoczecia DATE,
-	DataZakonczenia DATE,
+	DataRozpoczecia DATETIME,
+	DataZakonczenia DATETIME,
+	IloscUslug INT,
 	Oplacone BIT NOT NULL,
 );

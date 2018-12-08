@@ -16,7 +16,6 @@ person = Person()
 address = Address()
 business = Business()
 
-
 hotele = {}
 goscie_hotelowi = {}
 uslugi = {}
@@ -27,12 +26,16 @@ pobyty = {}
 zamowienia_uslugi = {}
 ankiety = {}
 
+
 def generujHotele(ilosc):
     for x in range(0, ilosc):
         hotel_id = uuid.uuid4()
         hotele[hotel_id] = Hotel(
             ID=hotel_id,
             Nazwa=business.company(),
+            Panstwo=address.country(),
+            JednostkaAdministracyjna=address.state(),
+            Miejscowosc=address.city(),
             Adres=address.address()
         )
 
@@ -78,7 +81,7 @@ def get_random_cena():
 def generujCennikiUslug(min_date, max_date, usluga_id):
     for opcja_pobytu_id in list(opcje_pobytu.keys()):
         start = min_date
-        end = get_random_date(start+datetime.timedelta(days=1), max_date)
+        end = get_random_date(start + datetime.timedelta(days=1), max_date)
         while (start != end):
             cennik_id = uuid.uuid4()
             cenniki_uslug[cennik_id] = CennikUslugi(
@@ -96,7 +99,7 @@ def generujCennikiUslug(min_date, max_date, usluga_id):
             elif diff.days < 60:
                 end = max_date
             else:
-                end = get_random_date(start+datetime.timedelta(days=1), max_date)
+                end = get_random_date(start + datetime.timedelta(days=1), max_date)
 
 
 def generujKartyHotelowe(min_date, max_date, ilosc):
@@ -113,16 +116,14 @@ def generujKartyHotelowe(min_date, max_date, ilosc):
 
 
 def getGoscForPobyt(karta_hotelowa_id):
-    gosc = random.choice(list(goscie_hotelowi.values()))
+    lista_gosc = list(goscie_hotelowi.values())
+    gosc = random.choice(lista_gosc)
 
     if len(gosc._Pobyty) == 0:
         return gosc.PESEL
 
     czyLosowacNowegoGoscia = False
     goscNiepoprawny = True
-
-
-
 
     while goscNiepoprawny:
         for pobyt_id in gosc._Pobyty:
@@ -134,12 +135,10 @@ def getGoscForPobyt(karta_hotelowa_id):
                     czyLosowacNowegoGoscia = True
                     break
         if czyLosowacNowegoGoscia:
-            gosc = random.choice(list(goscie_hotelowi.values()))
+            gosc = random.choice(lista_gosc)
             czyLosowacNowegoGoscia = False
         else:
             goscNiepoprawny = False
-
-
 
     return gosc.PESEL
 
@@ -160,12 +159,12 @@ def generujPobyty(ilosc, karta_hotelowa_id):
 
 
 def get_cennik_for_zamowienie(date, opcja_pobytu):
-    _cenniki = list(filter(
-        lambda temp: temp.DataRozpoczecia <= date <= temp.DataZakonczenia and temp.OpcjaPobytu == opcja_pobytu,
-        list(cenniki_uslug.values())
-    ))
-
-    return random.choice(_cenniki).ID
+    lista_cennik = list(cenniki_uslug.values())
+    notFound = True
+    while notFound:
+        temp = random.choice(lista_cennik)
+        if temp.DataRozpoczecia <= date <= temp.DataZakonczenia and temp.OpcjaPobytu == opcja_pobytu:
+            return temp.ID
 
 
 def generujZamowieniaUslug(ilosc, karta_hotelowa_id, max_date):
@@ -178,12 +177,16 @@ def generujZamowieniaUslug(ilosc, karta_hotelowa_id, max_date):
     for x in range(0, ilosc):
         start = get_random_date(min_date, max_date)
         zamowienie_id = uuid.uuid4()
+        cz_rozp = get_random_time()
         zamowienia_uslugi[zamowienie_id] = ZamowienieUslugi(
             _ID=zamowienie_id,
             KartaHotelowaID=karta_hotelowa_id,
             CennikUslugiID=get_cennik_for_zamowienie(start, karta_hotelowa.OpcjaPobytu),
             DataRozpoczecia=start,
+            CzasRozpoczecia=cz_rozp,
             DataZakonczenia=get_random_date(start, max_date),
+            CzasZakonczenia=get_random_time(min=datetime.datetime.combine(start, cz_rozp)),
+            IloscUslug=random.randint(1, 5),
             Oplacone=random.randint(0, 1)
         )
 
@@ -197,18 +200,17 @@ def generujAnkiete(karta_hotelowa_id, data, opcje_uslug):
     ankieta = {
         'data': data.strftime('%Y-%m-%d'),
         'plec': random.choice(plec),
-        'wiek': randint(18,100),
+        'wiek': randint(18, 100),
         'sugestie': 'lorem ipsum',
         'oceny': {
             'zadowolenieZPobytu': randint(0, 10),
-            'czystoscPokoju': randint(0,10),
+            'czystoscPokoju': randint(0, 10),
             'wyposazeniePokoju': randint(0, 10),
             'czystoscLazienki': randint(0, 10),
             'jakosc': dict(zip(opcje_uslug, jakosc_uslug))
         }
     }
     ankiety[str(karta_hotelowa_id)] = ankieta
-
 
 
 def single(title, body):
@@ -219,12 +221,11 @@ def single(title, body):
     print("Zakończone; czas: {czas}s; ilość: {ilosc}".format(czas=elapsed_time, ilosc=count))
 
 
-
 def generuj(N, t1, t2, opcje_uslug):
     print("Rozpoczynanie generowania; daty: poczatek={t1}, koniec={t2}".format(t1=t1, t2=t2))
 
     def stage1():
-        ilosc = N*3
+        ilosc = N * 6
         generujGoscieHotelowi(ilosc=ilosc, date_max=(t1 - datetime.timedelta(days=365 * 10)))
         return ilosc
 
@@ -330,4 +331,3 @@ def generuj(N, t1, t2, opcje_uslug):
         "ZamowienieUslugi": zamowienia_uslugi,
         "Pobyt": pobyty
     }
-
